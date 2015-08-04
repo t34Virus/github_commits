@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+  <div id="wrapper">
+    <div id="container">
+      <h1>Rails Commits</h1>
+
+      <div id="commits"></div> 
+      <div id="totals"></div> 
+
+      <script>
+        var xmlhttp = new XMLHttpRequest(); //object request to retrieve data 
+
+        var commitsUrl = "https://api.github.com/repos/rails/rails/commits"; //variable to access API on Rails Repository     
+
+        xmlhttp.onreadystatechange=function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                getCommits(xmlhttp.responseText);
+          }
+        } // function to be executed when readyState changes
+
+        xmlhttp.open("GET", commitsUrl, true); //specifies a GET, asynchronous, URL request
+        xmlhttp.send(); // sends request to the server
+
+
+        function getCommits(response) {
+
+          var arr = JSON.parse(response); //reads data from server to display on app
+          var list = "<table>";
+
+          for(var i = 0; i < arr.length; i++) {           
+          var shaUrl = "https://api.github.com/repos/rails/rails/commits/" + arr[i].sha;
+
+          var xmlhttp = new XMLHttpRequest(); //object request to retrieve data 
+
+
+          xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                  getSha(xmlhttp.responseText);
+            }
+          } // function to be executed when readyState changes
+
+          xmlhttp.open("GET", shaUrl, true); //specifies a GET, asynchronous, URL request
+          xmlhttp.send(); // sends request to the server
+
+          function getSha(resp) {
+            var arr2 = JSON.parse(resp); //reads data from server to display on app
+          var list2 = "<table>";
+
+            // for(var j = 0; j < arr.length; j++) {           
+
+          //   list2 += "<tr><td>" + 
+          //   shaUrl + 
+          //   "</td><td>" +
+          //   arr2[j].stats.total + 
+          //   "</td><td>" +
+          //   arr2[j].stats.additions + 
+          //   "</td><td>" +
+          //   arr2[j].stats.deletions + 
+          //   "</td></tr>";
+          //   }
+          //   list2 += "</table>";
+
+          }
+ 
+
+          list += "<tr><td>" + 
+            arr[i] + 
+            "</td><td>" +
+            arr[i].commit.author.date + 
+            "</td><td>" +
+            arr[i].commit.message + 
+            "</td><td>" +
+            arr[i].commit.committer.name +
+            "</td><td><a href=" + '"' +
+            arr[i].html_url + '"' +
+            "</a>code</td></tr>";
+        } 
+
+          list += "</table>";
+
+            document.getElementById("commits").innerHTML = list;
+        }
+
+      </script>
+    </div>
+  </div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body { background: #F5F5F5; font: 16px/1.5 sans-serif; }
+    h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
+    h1 { font-size: 36px; }
+    h2 { font-size: 21px; margin-bottom: 1em; }
+    p { margin: 0 0 1em 0; }
+    tbody tr td { padding: 10px; }
+    a { color: #0000F0; }
+    a:hover { text-decoration: none; }
+    code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
+    #wrapper { background: #FFF; margin: 1em auto; width: 95%; }
+    #container { padding: 2em; }
+    #welcome, #status { margin-bottom: 2em; }
+    #welcome h1 span { display: block; font-size: 75%; }
+    #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
+    #icon-book { display: none; }
+
+    @media (min-width: 768px) {
+        #wrapper { width: 95%; margin: 2em auto; }
+        #icon-book { display: inline-block; }
+        #status a, #next a { display: block; }
+
+        @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+        .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards;}
+    }
+</style>
+{% endblock %}
