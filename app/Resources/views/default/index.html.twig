@@ -6,7 +6,6 @@
       <h1>Rails Commits</h1>
 
       <div id="commits"></div> 
-      <div id="totals"></div> 
 
       <script>
         var xmlhttp = new XMLHttpRequest(); //object request to retrieve data 
@@ -26,10 +25,10 @@
         function getCommits(response) {
 
           var arr = JSON.parse(response); //reads data from server to display on app
-          var list = "<table>";
+          var list = "<table>"; //variable to place data within table
 
           for(var i = 0; i < arr.length; i++) {           
-          var shaUrl = "https://api.github.com/repos/rails/rails/commits/" + arr[i].sha;
+          var shaUrl = "https://api.github.com/repos/rails/rails/commits/" + arr[i].sha; // variable to navigate to each commit for stats
 
           var xmlhttp = new XMLHttpRequest(); //object request to retrieve data 
 
@@ -43,9 +42,11 @@
           xmlhttp.open("GET", shaUrl, true); //specifies a GET, asynchronous, URL request
           xmlhttp.send(); // sends request to the server
 
+          // function to get the sha from each commit to navigate to new API with stats that contain additions, deletions and total commits
           function getSha(resp) {
             var arr2 = JSON.parse(resp); //reads data from server to display on app
-          var list2 = "<table>";
+            
+            var list2 = "<table>";
 
             // for(var j = 0; j < arr.length; j++) {           
 
@@ -63,10 +64,8 @@
 
           }
  
-
+          // displays a table with desired API output
           list += "<tr><td>" + 
-            arr[i] + 
-            "</td><td>" +
             arr[i].commit.author.date + 
             "</td><td>" +
             arr[i].commit.message + 
